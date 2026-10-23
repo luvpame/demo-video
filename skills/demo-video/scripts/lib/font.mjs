@@ -2,10 +2,15 @@
 import { existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 
+// Windows の区切りの \ は drawtext の fontfile で崩れるので / にする
+const winFonts = (process.env.WINDIR ?? "C:/Windows").replaceAll("\\", "/") + "/Fonts";
+
 export function findFont() {
   const candidates = [
     "/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc",
     "/System/Library/Fonts/Hiragino Sans GB.ttc",
+    `${winFonts}/YuGothB.ttc`,
+    `${winFonts}/meiryob.ttc`,
   ];
   for (const f of candidates) if (existsSync(f)) return f;
   try {
@@ -13,10 +18,4 @@ export function findFont() {
     if (f && existsSync(f)) return f;
   } catch {}
   return null;
-}
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const f = findFont();
-  if (!f) process.exit(1);
-  console.log(f);
 }

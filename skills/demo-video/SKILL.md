@@ -7,15 +7,21 @@ description: Web アプリを実際に操作して、字幕付きのデモ動画
 
 Web アプリを Playwright で操作し、字幕を焼き込んだ動画をセクションごとに録画して mp4 にする。同梱のスクリプトはこの SKILL.md と同じフォルダの `scripts/` にある（以下 `$S`）。
 
-動画は `~/Movies/claude-demos/<名前>-<YYYYMMDD>/`（以下 `$OUT`）に作る。シナリオもここに `scenario.mjs` として置き、撮り直しに使う。
+動画は Mac では `~/Movies/claude-demos/<名前>-<YYYYMMDD>/`、Windows では `$HOME/Videos/claude-demos/<名前>-<YYYYMMDD>/`（以下 `$OUT`）に作る。シナリオもここに `scenario.mjs` として置き、撮り直しに使う。
+
+Windows には試験的に対応している（動かして確かめていない）。Windows で止まったら、出た文をそのままユーザーに伝える。
 
 ## 手順
 
 ### 1. 道具をそろえる
 
-`bash $S/setup.sh` を流す。最後に「準備できました」と出れば終わり。足りない道具が出たら、入れ方をユーザーに伝えて止まる。
+Mac では `bash $S/setup.sh`、Windows では `powershell -ExecutionPolicy Bypass -File $S/setup.ps1` を流す。Node.js・Playwright・ffmpeg は、足りなければ `~/.cache/demo-video/` に自動で入る。ユーザーに何かを入れてもらう必要はない。
 
-録画する URL を `curl -s -o /dev/null -m 10 -w '%{http_code}'` で開き、どれも応答が返ることを確かめる。タイムアウトするときは、VPN などの接続をユーザーに確かめてもらう。
+- 最後に「準備できました」と出れば終わり。`node:` の行に出たパスを、以下の `node` の代わりに使う。
+- `chrome:` で止まったら、https://www.google.com/chrome/ から Google Chrome を入れてもらい、入れ終わったらもう一度流す。
+- それ以外で止まったら、出た文をユーザーに伝えて止まる。
+
+録画する URL を `curl -s -o /dev/null -m 10 -w '%{http_code}'`（Windows の PowerShell では `curl.exe`）で開き、どれも応答が返ることを確かめる。タイムアウトするときは、VPN などの接続をユーザーに確かめてもらう。
 
 ### 2. ログインする
 

@@ -5,7 +5,7 @@ export function installOverlay() {
     const style = document.createElement("style");
     style.textContent = `
       #__demo_cap{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);width:min(1120px,calc(100% - 60px));
-        background:rgba(14,30,36,.88);color:#fff;font:600 22px/1.5 "Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+        background:rgba(14,30,36,.88);color:#fff;font:600 22px/1.5 "Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo","Noto Sans JP",sans-serif;
         padding:12px 22px 14px;border-radius:10px;z-index:2147483647;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.25);pointer-events:none;letter-spacing:.02em}
       #__demo_cap[hidden]{display:none}
       #__demo_cap.top{top:70px;bottom:auto}

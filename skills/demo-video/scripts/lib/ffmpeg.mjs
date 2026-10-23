@@ -1,17 +1,24 @@
 // 録画の webm を mp4 にし、タイトル画面を付け、つなぎ、確認用の静止画の一覧を作る
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { loadRuntime } from "./browser.mjs";
 import { findFont } from "./font.mjs";
 
+// ffmpeg-static が OS ごとに drawtext と libx264 の入った ffmpeg を落としてくる
+export const ffmpegPath = () => loadRuntime("ffmpeg-static");
 const ENC = ["-c:v", "libx264", "-preset", "veryfast", "-crf", "22", "-pix_fmt", "yuv420p", "-r", "30", "-an"];
-const run = (args) => execFileSync("ffmpeg", ["-v", "error", "-y", ...args], { stdio: ["ignore", "ignore", "inherit"] });
+const run = (args) => execFileSync(ffmpegPath(), ["-v", "error", "-y", ...args], { stdio: ["ignore", "ignore", "inherit"] });
 const esc = (s) => s.replaceAll("\\", "\\\\").replaceAll("'", "\u2019").replaceAll(":", "\\:").replaceAll("%", "\\%");
 const hex = (color) => `0x${color.slice(1)}`;
 
+// ffmpeg-static には ffprobe が無いので、ffmpeg -i が出す Duration の行から読む
 export function duration(file) {
-  return Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", file], { encoding: "utf8" }).trim());
+  const { stderr } = spawnSync(ffmpegPath(), ["-hide_banner", "-i", file], { encoding: "utf8" });
+  const m = stderr.match(/Duration: (\d+):(\d+):([\d.]+)/);
+  if (!m) throw new Error(`長さを読めません: ${file}`);
+  return Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]);
 }
 
 export function titleCard(text, out, { theme, seconds = 1.5, width = 1280, height = 800 }) {
@@ -27,7 +34,8 @@ export function toMp4(input, out) { run(["-i", input, ...ENC, out]); }
 export function concat(files, out) {
   const dir = mkdtempSync(join(tmpdir(), "demo-video-"));
   const list = join(dir, "list.txt");
-  writeFileSync(list, files.map((f) => `file '${f.replaceAll("'", "'\\''")}'`).join("\n"));
+  const path = (f) => (process.platform === "win32" ? f.replaceAll("\\", "/") : f);
+  writeFileSync(list, files.map((f) => `file '${path(f).replaceAll("'", "'\\''")}'`).join("\n"));
   try { run(["-f", "concat", "-safe", "0", "-i", list, "-c", "copy", out]); } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 

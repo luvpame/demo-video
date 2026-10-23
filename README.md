@@ -33,7 +33,7 @@
 
 | | Claude | あなた |
 |---|---|---|
-| 1 | 道具をそろえ、URL に届くか確かめる | 足りない道具を入れる |
+| 1 | 道具をそろえ、URL に届くか確かめる | Chrome がなければ入れる |
 | 2 | ログインのしかたを選ぶ | 必要なら手でログインする |
 | 3 | 画面を下見してシナリオと字幕を書く | |
 | 4 | セクション・字幕・データを変える操作を見せる | **OK を出す** |
@@ -55,12 +55,12 @@ OK を出すまで、リハーサルも録画も流しません。
 
 ## Requirements
 
-- Node.js
+- macOS（Apple Silicon・Intel）、または Windows 10/11（x64、試験的に対応）
 - Google Chrome
-- ffmpeg（`drawtext` と `libx264` が使えるもの）
-- 日本語フォント
 
-Playwright は初回に `~/.cache/demo-video/` へ入れ、ログイン状態も同じ場所に残します（`DEMO_VIDEO_HOME` で変えられます）。
+Node.js・Playwright・ffmpeg は、足りなければ初回に `~/.cache/demo-video/` へ自動で入れます。管理者の権限も Homebrew も要りません。ログイン状態も同じ場所に残します（`DEMO_VIDEO_HOME` で変えられます）。
+
+Windows は動かして確かめていません。動かないところがあれば Issue で教えてください。
 
 ## Scenarios
 
@@ -92,7 +92,7 @@ export default {
 
 ```sh
 S=skills/demo-video/scripts
-bash $S/setup.sh
+bash $S/setup.sh   # Windows: powershell -ExecutionPolicy Bypass -File $S/setup.ps1
 node $S/login.mjs --profile my-app --url https://example.com/login
 node $S/run.mjs scenario.mjs --mode rehearsal --out ~/Movies/claude-demos/my-demo
 node $S/run.mjs scenario.mjs --mode record --out ~/Movies/claude-demos/my-demo   # --only 2 で一部だけ撮り直す

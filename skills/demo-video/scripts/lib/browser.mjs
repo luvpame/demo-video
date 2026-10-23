@@ -1,4 +1,4 @@
-// setup.sh で入れた Playwright を読み込み、ログイン状態を残すプロファイルで Chrome を開く
+// setup で入れた Playwright を読み込み、ログイン状態を残すプロファイルで Chrome を開く
 import { createRequire } from "node:module";
 import { homedir } from "node:os";
 import { join } from "node:path";
@@ -7,12 +7,12 @@ import { mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 export const HOME = process.env.DEMO_VIDEO_HOME ?? join(homedir(), ".cache", "demo-video");
 export const VIEWPORT = { width: 1280, height: 800 };
 
-export function loadPlaywright() {
+export function loadRuntime(name) {
   const require = createRequire(join(HOME, "node_modules", "_"));
   try {
-    return require("playwright");
+    return require(name);
   } catch {
-    throw new Error(`Playwright がありません。先に setup.sh を流してください（${HOME}）`);
+    throw new Error(`${name} がありません。先に setup.sh（Windows は setup.ps1）を流してください（${HOME}）`);
   }
 }
 
@@ -31,7 +31,7 @@ export async function saveSessionCookies(context, profile) {
 }
 
 export async function openContext({ profile, headless = true, videoDir = null, viewport = VIEWPORT }) {
-  const { chromium } = loadPlaywright();
+  const { chromium } = loadRuntime("playwright");
   const context = await chromium.launchPersistentContext(profileDir(profile), {
     channel: "chrome",
     headless,
