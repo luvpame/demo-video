@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/github/license/luvpame/demo-video?style=flat-square" alt="MIT license">
 </p>
 
-## できること
+## Features
 
 - 見せている物とその理由の2段の字幕、章の名前、マウスの位置を焼き込んで録画します。
 - セクションごとの mp4 に短いタイトル画面を付け、全部をつないだ `all.mp4` も作ります。
@@ -19,7 +19,7 @@
 - Google・SSO・多要素認証のログインは、開いた Chrome で一度だけ手で行い、その状態を撮り直しでも使います。
 - 字幕が画面とずれていないか、要素を隠していないかを静止画の一覧で確かめ、合わないセクションだけ撮り直します。
 
-## 入れ方
+## Installation
 
 ```
 /plugin marketplace add luvpame/demo-video
@@ -28,7 +28,7 @@
 
 「〇〇のデモ動画を作って」と頼むか、`/demo-video` で呼び出します。
 
-## 流れ
+## How it works
 
 | | Claude | あなた |
 |---|---|---|
@@ -41,7 +41,7 @@
 
 OK を出すまで、リハーサルも録画も流しません。
 
-## できあがるもの
+## Output
 
 ```
 ~/Movies/claude-demos/<名前>-<YYYYMMDD>/
@@ -52,11 +52,11 @@ OK を出すまで、リハーサルも録画も流しません。
 └── report.json         長さと、録画で変えたデータの一覧
 ```
 
-## 要るもの
+## Requirements
 
 Node.js、Google Chrome、ffmpeg（`drawtext` と `libx264` が使えるもの）、日本語フォントが要ります。Playwright は初回に `~/.cache/demo-video/` へ入れ、ログイン状態も同じ場所に残します（`DEMO_VIDEO_HOME` で変えられます）。
 
-## シナリオ
+## Scenarios
 
 シナリオはセクションごとに操作と字幕を並べた ES モジュールで、手でも直せます。
 
@@ -81,7 +81,7 @@ export default {
 
 `r.mutation` はデータを変える操作の目印で、リハーサルはここで止まります。操作の一覧は [`reference.md`](skills/demo-video/reference.md) にあります。
 
-## 手で動かす
+## Manual usage
 
 ```sh
 S=skills/demo-video/scripts
