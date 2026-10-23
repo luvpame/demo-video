@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "demo-video",
+  "description": "Record captioned demo videos of web apps with Playwright and ffmpeg.",
+  "owner": {
+    "name": "luvpame",
+    "url": "https://github.com/luvpame"
+  },
+  "plugins": [
+    {
+      "name": "demo-video",
+      "description": "Web アプリを Playwright で操作し、字幕付きのデモ動画をセクションごとに作る。",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

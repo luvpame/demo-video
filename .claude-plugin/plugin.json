@@ -1,0 +1,10 @@
+{
+  "name": "demo-video",
+  "version": "0.1.0",
+  "description": "Web アプリを Playwright で操作し、字幕付きのデモ動画をセクションごとに作る。",
+  "author": {
+    "name": "luvpame",
+    "url": "https://github.com/luvpame"
+  },
+  "license": "MIT"
+}
