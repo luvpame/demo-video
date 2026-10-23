@@ -54,7 +54,12 @@ OK を出すまで、リハーサルも録画も流しません。
 
 ## Requirements
 
-Node.js、Google Chrome、ffmpeg（`drawtext` と `libx264` が使えるもの）、日本語フォントが要ります。Playwright は初回に `~/.cache/demo-video/` へ入れ、ログイン状態も同じ場所に残します（`DEMO_VIDEO_HOME` で変えられます）。
+- Node.js
+- Google Chrome
+- ffmpeg（`drawtext` と `libx264` が使えるもの）
+- 日本語フォント
+
+Playwright は初回に `~/.cache/demo-video/` へ入れ、ログイン状態も同じ場所に残します（`DEMO_VIDEO_HOME` で変えられます）。
 
 ## Scenarios
 
