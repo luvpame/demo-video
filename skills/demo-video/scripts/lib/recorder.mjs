@@ -5,10 +5,10 @@ export class StopRehearsal extends Error {
   constructor(what) { super(`リハーサルはここで止めます: ${what}`); this.what = what; }
 }
 
-export async function createRecorder({ context, mode, chapter, report }) {
+export async function createRecorder({ context, mode, chapter, report, theme }) {
   await context.addInitScript(installOverlay);
   const page = context.pages()[0] ?? (await context.newPage());
-  const state = { cap: "", sub: "", chap: chapter, top: false };
+  const state = { cap: "", sub: "", chap: chapter, top: false, theme };
   const apply = () => page.evaluate(renderCaption, state).catch(() => {});
   page.on("domcontentloaded", () => setTimeout(apply, 50));
 

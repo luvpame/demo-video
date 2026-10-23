@@ -18,6 +18,7 @@
 - 録画の前にシナリオを見せて確かめ、データを変える操作の手前までリハーサルします。
 - Google・SSO・多要素認証のログインは、開いた Chrome で一度だけ手で行い、その状態を撮り直しでも使います。
 - 字幕が画面とずれていないか、要素を隠していないかを静止画の一覧で確かめ、合わないセクションだけ撮り直します。
+- タイトル画面と章名の色を、シナリオの `theme` で変えられます。
 
 ## Installation
 
@@ -69,6 +70,7 @@ Playwright は初回に `~/.cache/demo-video/` へ入れ、ログイン状態も
 export default {
   name: "my-demo",
   profile: "my-app",
+  theme: "#1E88E5",
   sections: [
     {
       title: "1 記事の投稿",
@@ -84,7 +86,7 @@ export default {
 };
 ```
 
-`r.mutation` はデータを変える操作の目印で、リハーサルはここで止まります。操作の一覧は [`reference.md`](skills/demo-video/reference.md) にあります。
+`theme` はタイトル画面と章名の色で、省略すると緑です。文字は白か黒の読みやすいほうになります。`r.mutation` はデータを変える操作の目印で、リハーサルはここで止まります。操作の一覧は [`reference.md`](skills/demo-video/reference.md) にあります。
 
 ## Manual usage
 

@@ -8,6 +8,19 @@ import { openContext } from "./lib/browser.mjs";
 import { createRecorder, StopRehearsal } from "./lib/recorder.mjs";
 import { titleCard, toMp4, concat, contactSheet, duration } from "./lib/ffmpeg.mjs";
 
+// テーマカラーの上の文字は、白と黒のうちコントラストの高いほう（WCAG の相対輝度で 0.179 が境目）にする
+function themeOf(bg) {
+  if (!/^#[0-9a-fA-F]{6}$/.test(bg)) {
+    console.error(`theme は "#0E6B66" のように # と16進6桁で書いてください: ${bg}`);
+    process.exit(2);
+  }
+  const [r, g, b] = [1, 3, 5].map((i) => {
+    const c = parseInt(bg.slice(i, i + 2), 16) / 255;
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return { bg, fg: 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.179 ? "#111111" : "#FFFFFF" };
+}
+
 const { values, positionals } = parseArgs({ allowPositionals: true, options: {
   mode: { type: "string", default: "rehearsal" }, out: { type: "string" }, only: { type: "string" },
 } });
@@ -17,6 +30,7 @@ if (!scenarioPath || !values.out || !["rehearsal", "record"].includes(values.mod
   process.exit(2);
 }
 const scenario = (await import(pathToFileURL(resolve(scenarioPath)).href)).default;
+const theme = themeOf(scenario.theme ?? "#0E6B66");
 const out = resolve(values.out);
 const only = values.only?.split(",").map((s) => s.trim());
 const sections = scenario.sections
@@ -32,7 +46,7 @@ for (const section of sections) {
   const chapter = section.title;
   const videoDir = values.mode === "record" ? join(out, "raw", section.no) : null;
   const context = await openContext({ profile: scenario.profile, videoDir, viewport: scenario.viewport });
-  const r = await createRecorder({ context, mode: values.mode, chapter, report });
+  const r = await createRecorder({ context, mode: values.mode, chapter, report, theme });
   let status = "ok";
   let detail = "";
   try {
@@ -62,7 +76,7 @@ if (values.mode === "record") {
   for (const res of results.filter((x) => x.raw)) {
     const card = join(out, ".parts", `${res.no}-card.mp4`);
     const body = join(out, ".parts", `${res.no}-body.mp4`);
-    titleCard(res.title, card);
+    titleCard(res.title, card, { theme });
     toMp4(res.raw, body);
     res.file = join(out, `${res.no}_${res.title.replace(/[\\/:*?"<>|]/g, "_")}.mp4`);
     concat([card, body], res.file);

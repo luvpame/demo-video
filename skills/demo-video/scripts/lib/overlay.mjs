@@ -9,7 +9,7 @@ export function installOverlay() {
         padding:12px 22px 14px;border-radius:10px;z-index:2147483647;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.25);pointer-events:none;letter-spacing:.02em}
       #__demo_cap[hidden]{display:none}
       #__demo_cap.top{top:70px;bottom:auto}
-      #__demo_cap .chap{display:inline-block;font-size:13px;font-weight:700;background:#0E6B66;border-radius:4px;padding:2px 8px;margin-bottom:6px;letter-spacing:.04em}
+      #__demo_cap .chap{display:inline-block;font-size:13px;font-weight:700;border-radius:4px;padding:2px 8px;margin-bottom:6px;letter-spacing:.04em}
       #__demo_cap .sub{display:block;font-size:16px;font-weight:400;opacity:.9;margin-top:2px}
       #__demo_cur{position:fixed;width:22px;height:22px;border-radius:50%;background:rgba(242,176,40,.55);border:2px solid #E89A00;
         z-index:2147483646;pointer-events:none;transform:translate(-50%,-50%);left:-100px;top:-100px;transition:width .12s,height .12s}
@@ -29,7 +29,7 @@ export function installOverlay() {
   else install();
 }
 
-export function renderCaption({ cap, sub, chap, top }) {
+export function renderCaption({ cap, sub, chap, top, theme }) {
   const c = document.getElementById("__demo_cap");
   if (!c) return;
   c.replaceChildren();
@@ -39,6 +39,8 @@ export function renderCaption({ cap, sub, chap, top }) {
     const t = document.createElement("span");
     t.className = "chap";
     t.textContent = chap;
+    t.style.background = theme.bg;
+    t.style.color = theme.fg;
     c.append(t, document.createElement("br"));
   }
   if (cap) c.append(document.createTextNode(cap));

@@ -8,16 +8,17 @@ import { findFont } from "./font.mjs";
 const ENC = ["-c:v", "libx264", "-preset", "veryfast", "-crf", "22", "-pix_fmt", "yuv420p", "-r", "30", "-an"];
 const run = (args) => execFileSync("ffmpeg", ["-v", "error", "-y", ...args], { stdio: ["ignore", "ignore", "inherit"] });
 const esc = (s) => s.replaceAll("\\", "\\\\").replaceAll("'", "\u2019").replaceAll(":", "\\:").replaceAll("%", "\\%");
+const hex = (color) => `0x${color.slice(1)}`;
 
 export function duration(file) {
   return Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", file], { encoding: "utf8" }).trim());
 }
 
-export function titleCard(text, out, { seconds = 1.5, width = 1280, height = 800 } = {}) {
+export function titleCard(text, out, { theme, seconds = 1.5, width = 1280, height = 800 }) {
   const font = findFont();
   if (!font) throw new Error("日本語フォントが見つかりません");
-  run(["-f", "lavfi", "-i", `color=c=0x0E3B3A:s=${width}x${height}:d=${seconds}`,
-    "-vf", `drawtext=fontfile='${esc(font)}':text='${esc(text)}':fontcolor=white:fontsize=50:x=(w-text_w)/2:y=(h-text_h)/2`,
+  run(["-f", "lavfi", "-i", `color=c=${hex(theme.bg)}:s=${width}x${height}:d=${seconds}`,
+    "-vf", `drawtext=fontfile='${esc(font)}':text='${esc(text)}':fontcolor=${hex(theme.fg)}:fontsize=50:x=(w-text_w)/2:y=(h-text_h)/2`,
     ...ENC, out]);
 }
 

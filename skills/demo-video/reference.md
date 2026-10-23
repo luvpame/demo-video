@@ -7,6 +7,7 @@ export default {
   name: "sr-demo",          // 動画の名前（出力先の名前にも使う）
   profile: "my-app",        // login.mjs で使ったプロファイル名
   viewport: { width: 1280, height: 800 }, // 省略可
+  theme: "#0E6B66",         // タイトル画面の背景と章名の札の色。省略可（既定は緑）
   sections: [
     { title: "1 記事の投稿", async run(r) { /* 操作 */ } },
   ],
