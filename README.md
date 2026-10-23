@@ -1,7 +1,7 @@
 <h1 align="center">demo-video</h1>
 
 <p align="center">
-  <em>「〇〇のデモ動画を作って」と頼むと、Claude が Web アプリを操作して字幕付きの mp4 を撮ってきます。</em>
+  <em>「〇〇のデモ動画を作って」と頼むと、Claude が Web アプリを操作して字幕付きの mp4 を作ります。</em>
 </p>
 
 <p align="center">
@@ -11,17 +11,13 @@
   <img src="https://img.shields.io/github/license/luvpame/demo-video?style=flat-square" alt="MIT license">
 </p>
 
----
-
-画面録画を撮り、字幕を足し、撮り直す。デモ動画づくりのこの手間を Claude Code に任せるためのプラグインです。Claude が画面を下見してシナリオを書き、確認をとってから Playwright で操作して録画し、ffmpeg で字幕を焼き込みます。
-
 ## できること
 
-- **2段の字幕**。見せている物（上段）と、その理由（下段）を画面に焼き込みます。章の名前とマウスの位置も描きます。
-- **セクションごとの mp4**。セクションごとに頭へ短いタイトル画面を付け、全部をつないだ `all.mp4` も作ります。
-- **データを壊さないリハーサル**。録画の前にシナリオを見せて確かめ、投稿や保存などデータを変える操作の手前まで通しで動かします。
-- **手でしかできないログインにも対応**。Google・SSO・多要素認証は開いた Chrome で一度だけ手でログインし、その状態を撮り直しでも使います。
-- **撮った後の確認**。各セクションから静止画を等間隔に抜いた一覧を作り、字幕が要素を隠していないか、画面とずれていないかを Claude が見て撮り直します。
+- 見せている物とその理由の2段の字幕、章の名前、マウスの位置を焼き込んで録画します。
+- セクションごとの mp4 に短いタイトル画面を付け、全部をつないだ `all.mp4` も作ります。
+- 録画の前にシナリオを見せて確かめ、データを変える操作の手前までリハーサルします。
+- Google・SSO・多要素認証のログインは、開いた Chrome で一度だけ手で行い、その状態を撮り直しでも使います。
+- 字幕が画面とずれていないか、要素を隠していないかを静止画の一覧で確かめ、合わないセクションだけ撮り直します。
 
 ## 入れ方
 
@@ -34,18 +30,16 @@
 
 ## 流れ
 
-| | Claude がすること | あなたがすること |
+| | Claude | あなた |
 |---|---|---|
-| 1 | 道具をそろえ、録画する URL に届くか確かめる | 足りない道具があれば入れる |
-| 2 | ログインのしかたを選ぶ | 必要なら Chrome で手でログインする |
-| 3 | 画面を下見して、ボタンや入力欄を調べる | |
-| 4 | シナリオと字幕を書く | |
-| 5 | セクション・字幕・データを変える操作の一覧を見せる | **読んで OK を出す** |
-| 6 | データを変える手前までリハーサルする | |
-| 7 | 録画する | |
-| 8 | 静止画の一覧を見て、ずれたセクションだけ撮り直す | |
+| 1 | 道具をそろえ、URL に届くか確かめる | 足りない道具を入れる |
+| 2 | ログインのしかたを選ぶ | 必要なら手でログインする |
+| 3 | 画面を下見してシナリオと字幕を書く | |
+| 4 | セクション・字幕・データを変える操作を見せる | **OK を出す** |
+| 5 | リハーサルして録画する | |
+| 6 | 静止画の一覧を見て撮り直す | |
 
-OK を出すまで、Claude はリハーサルも録画も流しません。撮り直しでデータを変える操作がもう一度走るときも、先に確かめます。
+OK を出すまで、リハーサルも録画も流しません。
 
 ## できあがるもの
 
@@ -53,26 +47,18 @@ OK を出すまで、Claude はリハーサルも録画も流しません。撮�
 ~/Movies/claude-demos/<名前>-<YYYYMMDD>/
 ├── scenario.mjs        撮り直しに使うシナリオ
 ├── 01_<タイトル>.mp4   セクションごとの動画
-├── 02_<タイトル>.mp4
 ├── all.mp4             全セクションをつないだ動画
-├── check/01.png        確認用の静止画の一覧（12 枚）
+├── check/01.png        確認用の静止画の一覧
 └── report.json         長さと、録画で変えたデータの一覧
 ```
 
-録画で変えたデータは `report.json` に残すだけで、消しはしません。
-
 ## 要るもの
 
-- Node.js
-- Google Chrome（Playwright のブラウザは別に入れません）
-- ffmpeg（`drawtext` と `libx264` が使えるもの。`brew install ffmpeg` など）
-- 日本語フォント（macOS はヒラギノ、Linux は `fc-match` で探します）
-
-Playwright は初回に `~/.cache/demo-video/` へ入れます（`DEMO_VIDEO_HOME` で変えられます）。ログイン状態も同じ場所の `profiles/` に残ります。
+Node.js、Google Chrome、ffmpeg（`drawtext` と `libx264` が使えるもの）、日本語フォントが要ります。Playwright は初回に `~/.cache/demo-video/` へ入れ、ログイン状態も同じ場所に残します（`DEMO_VIDEO_HOME` で変えられます）。
 
 ## シナリオ
 
-Claude が書くシナリオは、セクションごとに操作と字幕を並べた ES モジュールです。手で直すこともできます。
+シナリオはセクションごとに操作と字幕を並べた ES モジュールで、手でも直せます。
 
 ```js
 export default {
@@ -93,20 +79,16 @@ export default {
 };
 ```
 
-`r.mutation` はデータを変える操作の目印です。リハーサルはここで止まり、録画では `report.json` に載ります。使える操作の一覧は [`reference.md`](skills/demo-video/reference.md)、動く例は [`example-scenario.mjs`](skills/demo-video/example-scenario.mjs) にあります。
+`r.mutation` はデータを変える操作の目印で、リハーサルはここで止まります。操作の一覧は [`reference.md`](skills/demo-video/reference.md) にあります。
 
 ## 手で動かす
 
-Claude を通さずにスクリプトを直接流すこともできます。
-
 ```sh
 S=skills/demo-video/scripts
-bash $S/setup.sh                                                       # 道具をそろえる
-node $S/login.mjs --profile my-app --url https://example.com/login     # 手でログインする
-node $S/probe.mjs --profile my-app https://example.com/                # 画面の作りを見る
+bash $S/setup.sh
+node $S/login.mjs --profile my-app --url https://example.com/login
 node $S/run.mjs scenario.mjs --mode rehearsal --out ~/Movies/claude-demos/my-demo
-node $S/run.mjs scenario.mjs --mode record --out ~/Movies/claude-demos/my-demo
-node $S/run.mjs scenario.mjs --mode record --out ~/Movies/claude-demos/my-demo --only 2   # 2 だけ撮り直す
+node $S/run.mjs scenario.mjs --mode record --out ~/Movies/claude-demos/my-demo   # --only 2 で一部だけ撮り直す
 ```
 
 ## License
