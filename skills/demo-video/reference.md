@@ -31,6 +31,8 @@ export default {
 | `r.scrollTo(loc, { block })` | 要素までなめらかにスクロールする |
 | `r.scrollBy(dy, ms)` | ページ全体を `dy` だけスクロールする |
 | `r.settle()` | 通信が落ち着くまで待つ |
+| `r.wait(ms)` | `ms` だけ待つ（リハーサルでも待つ） |
+| `r.log(...)` | 端末にセクション名付きで出す。動画には出ない |
 | `r.mutation(what)` | データを変える操作の直前に置く。リハーサルはここで止まり、録画では `report.json` に載る |
 | `r.page` / `r.context` | Playwright の Page と BrowserContext。API で ID を探すときは `r.page.request.get(...)` |
 
